@@ -13,7 +13,7 @@ gcore will also cause your process to pause while it creates the core dump, the 
 
 # How it works:
 
-To get around the restrictions on attaching a debugger this module lets the kernel to create a core dump in the standard way for a process crashing via SIGSEGV. To avoid destroying the running process this module forks just prior to raising SIGSEGV and the child process raises SIGSEGV.
+To get around the restrictions on attaching a debugger this module lets the kernel to create a core dump in the standard way for a process crashing via SIGSEGV. To avoid destroying the running process this module forks a child process and that child process raises SIGSEGV.
 
 Steps (Linux):
 - [Main process] Create a temporary working directory for the process to crash in. This is necessary as the name of the core dump created by the kernel may simply be "core". This is indistinguishable from other core dumps that may have been created.
