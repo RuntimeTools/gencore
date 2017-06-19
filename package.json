@@ -1,6 +1,6 @@
 {
   "name": "gencore",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Create a core dump from the currently running process without terminating or attaching a debugger.",
   "main": "index.js",
   "dependencies": {
@@ -8,16 +8,16 @@
     "fstream": ""
   },
   "scripts": {
-   "test": "tap --timeout=300 test/test*.js"
+    "test": "tap --timeout=300 test/test*.js"
   },
   "keywords": [
     "core",
     "dump",
     "linux"
   ],
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/RuntimeTools/gencore.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RuntimeTools/gencore.git"
   },
   "author": "Howard Hellyer",
   "license": "Apache-2.0"
