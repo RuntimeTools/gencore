@@ -8,13 +8,17 @@
     "fstream": ""
   },
   "scripts": {
-    "test": "tap --timeout=300 test/test*.js"
+   "test": "tap --timeout=300 test/test*.js"
   },
   "keywords": [
     "core",
     "dump",
     "linux"
   ],
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/RuntimeTools/gencore.git"
+  },
   "author": "Howard Hellyer",
   "license": "Apache-2.0"
 }
