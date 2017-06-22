@@ -63,15 +63,15 @@ function createCore(callback) {
 function waitForCore(result, callback) {
   try {
     if(!gencore.checkChild(result.child_pid)) {
-      // Check on the next tick round the event loop.
-      setImmediate(waitForCore, result, callback);
+      // Check again once the file has had a chance to be written.
+      setTimeout(waitForCore, 10, result, callback);
       return;
     }
   } catch (err) {
     setImmediate(callback, err);
     return;
   }
-  //console.error('Core file created!');
+
   const work_dir = result.work_dir;
   const pid = result.child_pid;
 
@@ -132,8 +132,8 @@ function collectCore(callback) {
 function waitForCoreAndCollect(result, callback) {
   try {
     if(!gencore.checkChild(result.child_pid)) {
-      // Check on the next tick round the event loop.
-      setImmediate(waitForCoreAndCollect, result, callback);
+      // Check again once the file has had a chance to be written.
+      setTimeout(waitForCoreAndCollect, 10, result, callback);
       // Return so we don't need to indent the rest of
       // this function in an else.
       return;
