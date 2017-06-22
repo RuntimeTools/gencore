@@ -38,7 +38,17 @@ function createCore(callback) {
     callback(new Error('Function not supported on Windows.'));
     return;
   }
-  const work_dir = fs.mkdtempSync('core_');
+
+  // Create a directory for the child process to crash in.
+  // Use the timestamp to create a (hopefully) unique namespace
+  // that allows the core to be related back to which process
+  // crashed and when.
+  const timestamp = generateTimestamp();
+
+  // Run synchronously until fork() returns.
+  const work_dir = `core_${timestamp}`;
+  fs.mkdirSync(work_dir);
+
   let result = null;
   try {
     result = gencore.forkCore(work_dir);
@@ -91,26 +101,15 @@ function collectCore(callback) {
   // process changes between requesting a core and the core
   // being created.
 
-  // Create a temporary directory for the child process to crash in
-  // since we can't be sure there isn't already a core file here or
-  // what the core file will be called.
-  const now = new Date();
-  function pad(n, len) {
-    if( len === undefined ) {
-      len = 2;
-    }
-    let str = `${n}`;
-    while(str.length < len) {
-      str = '0' + str;
-    }
-    return str;
-  }
+  // Create a directory for the child process to crash in.
+  // Use the timestamp to create a (hopefully) unique namespace
+  // that allows the core to be related back to which process
+  // crashed and when.
+  const timestamp = generateTimestamp();
 
-  // Create a time stamp for the tar.gz file name.
-  const timestamp = `${pad(now.getFullYear())}${pad(now.getMonth()+1)}` +
-    `${pad(now.getDate())}.${pad(now.getHours())}${pad(now.getMinutes())}` +
-    `${pad(now.getSeconds())}.${process.pid}.${pad(++seq,3)}`;
-  const work_dir = fs.mkdtempSync('core_');
+  // Run synchronously until fork() returns.
+  const work_dir = `core_${timestamp}`;
+  fs.mkdirSync(work_dir);
 
   // Gather the library list before we allow async work
   // that might change the list to run.
@@ -127,7 +126,6 @@ function collectCore(callback) {
   // Now we can let other things run asyncrhonously!
   result.libraries = libraries;
   result.work_dir = work_dir;
-  result.timestamp = timestamp;
   setImmediate(waitForCoreAndCollect, result, callback);
 }
 
@@ -223,11 +221,11 @@ function copyFile(source, dest, closeCb) {
 }
 
 function tarGzDir(work_dir, result, callback) {
-  let tar_file = `core_${result.timestamp}.tar.gz`;
+  let tar_file = `${work_dir}.tar.gz`;
 
   // Use ls to obtain a list of files in work dir so the
   // resulting paths don't start with "./"
-  exec(`tar -C ${work_dir} -czf ${tar_file} \`ls ${work_dir}\``,
+  exec(`tar -czf ${tar_file} ${work_dir}`,
     (error, stdout, stderr) => {
       exec(`rm -r ${work_dir}`);
       callback(error, tar_file);
@@ -256,4 +254,27 @@ function findCore(work_dir, pid) {
     }
   }
   return undefined;
+}
+
+function generateTimestamp() {
+
+  const now = new Date();
+  function pad(n, len) {
+    if( len === undefined ) {
+      len = 2;
+    }
+    let str = `${n}`;
+    while(str.length < len) {
+      str = '0' + str;
+    }
+    return str;
+  }
+
+  // Create a time stamp that include the process id and a sequence number
+  // to make the core identifiable and unique.
+  const timestamp = `${pad(now.getFullYear())}${pad(now.getMonth()+1)}` +
+    `${pad(now.getDate())}.${pad(now.getHours())}${pad(now.getMinutes())}` +
+    `${pad(now.getSeconds())}.${process.pid}.${pad(++seq,3)}`;
+
+  return timestamp;
 }

@@ -1,11 +1,15 @@
 {
   "name": "gencore",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Create a core dump from the currently running process without terminating or attaching a debugger.",
   "main": "index.js",
   "dependencies": {
     "nan": "^2.3.5",
     "fstream": ""
+  },
+  "devDependencies": {
+    "tar": "<3.0.0",
+    "tap": ""
   },
   "scripts": {
     "test": "tap --timeout=300 test/test*.js"

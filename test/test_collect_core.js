@@ -3,8 +3,9 @@ const fs = require('fs');
 const tap = require('tap');
 const zlib = require('zlib');
 const tar = require('tar');
+const path = require('path');
 
-var core_count = 0;
+let core_count = 0;
 let callback_count = 0;
 
 tap.comment('Creating core and collecting libraries.');
@@ -32,9 +33,10 @@ function checkTarGz(error, filename) {
 }
 
 function checkEntry(entry) {
-  var name = entry.path;
-  var size = entry.size;
-  var type = entry.type;
+  // Trim off the top level directory containing our timestamp.
+  let name = entry.path.split(path.sep).slice(1).join(path.sep);
+  let size = entry.size;
+  let type = entry.type;
 
   // Check there's a file in the root that has a core-ish name.
   // TODO - How do I know how many files there are and when I'm done?

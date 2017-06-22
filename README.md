@@ -37,8 +37,8 @@ Creates a core dump. The callback signature is (err, filename) where err is set 
 
 - `gencore.collectCore(callback)`
 
-Creates a core dump and collects that and all the libraries loaded by the process into a tar.gz file. The callback signature is (err, filename) where err is set if an error occured and filename is the file containing the core and libraries.
-The libraries are stored with their paths intact but relative to the directory they are extracted in. (The leading / is removed.) The core dump will be stored in the root directory of the tar.gz file.
+Creates a core dump and collects that and all the libraries loaded by the process into a tar.gz file. The tar.gz is named "core_" followed by a timestamp, the pid of the Node.js process and a sequence number to ensure multiple files are unique. The callback signature is (err, filename) where err is set if an error occured and filename is the file containing the core and libraries.
+All the files in the tar file are under a top level directory with the same name as the tar.gz file but without the .tar.gz extension. The libraries are stored with their paths intact but relative to the top level directory of the tar file. The core dump will be stored under the top level directory of the tar.gz file.
 This function is intended to support analysis taking place on a different system to the one that generated the core dump. For example using lldb and llnode on a Mac to analyse a core from your production system.
 
 *Note:* Core files are large (approximately your processes memory size) so you should ensure the files created by these APIs are deleted when you have finished with them. Repeatedly calling this API will without deleting the files it creates consume a large amount of disk space.
