@@ -60,3 +60,8 @@ Windows support would be implemented via MiniDumpWriteDump:
 https://msdn.microsoft.com/en-us/library/windows/desktop/ms680360(v=vs.85).aspx
 
 Note: The lack of an API for requesting a core dump from the kernel on Linux is what necessitates the existence of this module. If there were an API this module could be rewritten to be far simpler as could gcore.
+
+
+## License
+
+[Licensed under the Apache 2.0 License.](LICENSE.md)
