@@ -1,6 +1,6 @@
 {
   "name": "gencore",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "description": "Create a core dump from the currently running process without terminating or attaching a debugger.",
   "main": "index.js",
   "dependencies": {
